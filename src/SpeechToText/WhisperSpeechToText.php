@@ -4,7 +4,7 @@ namespace ZoomRx\Audio\SpeechToText;
 use CURLFile;
 use Exception;
 use Locale;
-use ZoomRx\Audio\Audio\AudioUtility;
+use ZoomRx\Audio\Utility\AudioUtility;
 use ZoomRx\Audio\Utility\CurlRequest;
 
 /**

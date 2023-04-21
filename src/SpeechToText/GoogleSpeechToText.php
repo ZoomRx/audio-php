@@ -10,7 +10,7 @@ use Google\Cloud\Speech\V1p1beta1\SpeechClient;
 use Google\Cloud\Speech\V1p1beta1\SpeechContext;
 use Google\Cloud\Storage\StorageClient;
 use Throwable;
-use ZoomRx\Audio\Audio\AudioUtility;
+use ZoomRx\Audio\Utility\AudioUtility;
 
 /**
  * Class GoogleSpeechToText
