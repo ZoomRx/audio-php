@@ -102,7 +102,6 @@ class WhisperSpeechToText implements SpeechToTextInterface
      */
     public function setConfigurations(array $configurations): void
     {
-        $configurations['service'] = SpeechToTextFactory::WHISPER;
         $this->configurations = $configurations;
     }
 
@@ -133,6 +132,7 @@ class WhisperSpeechToText implements SpeechToTextInterface
     public function transcribe(string $audioFile): SpeechToTextResult
     {
         $this->_validateRequest($audioFile);
+        $this->configurations['service'] = SpeechToTextFactory::WHISPER;
 
         if (isset($this->configurations[self::TRANSLATE])) {
             $whiperEndpoint = self::TRANSLATE_ENDPOINT;

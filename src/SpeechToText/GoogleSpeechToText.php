@@ -114,7 +114,6 @@ class GoogleSpeechToText implements SpeechToTextInterface
      */
     public function setConfigurations(array $configurations): void
     {
-        $configurations['service'] = SpeechToTextFactory::GOOGLE;
         $this->configurations = $configurations;
     }
 
@@ -204,6 +203,7 @@ class GoogleSpeechToText implements SpeechToTextInterface
     public function transcribe(string $audioFile): SpeechToTextResult
     {
         $this->_validateRequest($audioFile);
+        $this->configurations['service'] = SpeechToTextFactory::GOOGLE;
 
         $audioDetails = AudioUtility::getAudioDetails($audioFile);
 

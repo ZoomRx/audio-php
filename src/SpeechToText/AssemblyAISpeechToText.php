@@ -93,7 +93,6 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
      */
     public function setCredentials(array $credentials): void
     {
-        $configurations['service'] = SpeechToTextFactory::ASSEMBLYAI;
         $this->credentials = $credentials;
     }
 
@@ -138,6 +137,8 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
     public function transcribe(string $audioFile): SpeechToTextResult
     {
         $this->_validateRequest($audioFile);
+
+        $this->configurations['service'] = SpeechToTextFactory::ASSEMBLYAI;
 
         $requestHeaders = [
             'Authorization: ' . $this->credentials[self::API_CREDENTIAL],
