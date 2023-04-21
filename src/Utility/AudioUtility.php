@@ -24,7 +24,7 @@ class AudioUtility
         }
         
         $script = realpath(__DIR__) . '/audio_details.py';
-        $command = "python3 {$script} --infile='{$infile}'";
+        $command = "python {$script} --infile='{$infile}'";
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
@@ -58,7 +58,7 @@ class AudioUtility
         $tmpDirectory = TMP;
 
         $script = realpath(__DIR__) . '/audio_splitter.py';
-        $command = "python3 {$script} --infile='{$infile}' --tmp_dir='{$tmpDirectory}' --chunk_size={$chunkSize}";
+        $command = "python {$script} --infile='{$infile}' --tmp_dir='{$tmpDirectory}' --chunk_size={$chunkSize}";
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
@@ -105,7 +105,7 @@ class AudioUtility
         }
 
         $script = realpath(__DIR__) . '/audio_convertor.py';
-        $command = trim("python3 {$script} --infile='{$infile}' --outfile='{$outfile}' --outfile_format='{$outfileFormat}' {$optionalArgs}");
+        $command = trim("python {$script} --infile='{$infile}' --outfile='{$outfile}' --outfile_format='{$outfileFormat}' {$optionalArgs}");
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
