@@ -1,5 +1,5 @@
 <?php
-namespace Zoomrx\Audio\Utility;
+namespace ZoomRx\Audio\Utility;
 
 use Exception;
 

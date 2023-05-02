@@ -161,7 +161,7 @@ class WhisperSpeechToText implements SpeechToTextInterface
                 $audioChunks[] = $audioFile;
             }
             foreach ($audioChunks as $audioChunk) {
-                $requestData['file'] = new CURLFile($audioChunk, $audioDetails['mime_type']);
+                $requestData['file'] = new CURLFile($audioChunk);
                 $response = CurlRequest::send(
                     $whiperEndpoint,
                     CurlRequest::POST,
