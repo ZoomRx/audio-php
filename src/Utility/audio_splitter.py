@@ -44,11 +44,12 @@ def split_file_by_size(infile: str, directory: str, chunk_size: int) -> list:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--infile", type=str, required=True)
+    parser.add_argument("--tmp_dir", type=str, required=True)
     parser.add_argument("--chunk_size", type=str, required=True)
     args = parser.parse_args()
 
     try:
-        chunks = split_file_by_size(args.infile, args.chunk_size)
+        chunks = split_file_by_size(args.infile, args.tmp_dir, args.chunk_size)
         for chunk in chunks:
             print(chunk)
         exit(0)
