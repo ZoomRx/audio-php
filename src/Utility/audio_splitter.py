@@ -4,14 +4,14 @@ import os
 from pydub import AudioSegment
 import time
 
-def split_file_by_size(infile: str, directory: str, chunk_size: int) -> list:
+def split_file_by_size(infile: str, directory: str, chunk_size: float) -> list:
     """
     Split a multimedia file into smaller chunks of a specified size.
 
     Args:
         infile (str): The path of the multimedia file to split.
         directory (str): The directory path for the output files.
-        chunk_size (int): The maximum size of each chunk, in KB.
+        chunk_size (float): The maximum size of each chunk, in KB.
     
     Returns:
         List[str]: A list of paths to the split chunks.
@@ -23,7 +23,7 @@ def split_file_by_size(infile: str, directory: str, chunk_size: int) -> list:
     # Calculate the number of chunks needed
     file_size_kb = os.path.getsize(infile) / 1024
     duration = audio.duration_seconds * 1000
-    ms_per_chunk = int((ceil(duration / file_size_kb)) * chunk_size)
+    ms_per_chunk = int(ceil(duration / file_size_kb) * chunk_size)
     num_chunks = int(ceil(duration / ms_per_chunk))
 
     file_name, extension = os.path.splitext(os.path.basename(infile))
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--infile", type=str, required=True)
     parser.add_argument("--tmp_dir", type=str, required=True)
-    parser.add_argument("--chunk_size", type=str, required=True)
+    parser.add_argument("--chunk_size", type=float, required=True)
     args = parser.parse_args()
 
     try:
