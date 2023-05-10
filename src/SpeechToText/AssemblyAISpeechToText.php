@@ -179,11 +179,7 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
             return $speechToTextResult;
         } catch (Exception $e) {
             throw $e;
-        } finally {
-
         }
-
-
     }
 
     /**

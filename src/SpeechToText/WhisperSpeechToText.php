@@ -72,6 +72,19 @@ class WhisperSpeechToText implements SpeechToTextInterface
     ];
 
     /**
+     * List of supported file formats
+     */
+    const SUPPORTED_FILE_FORMATS = [
+        AudioUtility::EXTENSIONS['MP3'],
+        AudioUtility::EXTENSIONS['MP4'],
+        AudioUtility::EXTENSIONS['MPEG'],
+        AudioUtility::EXTENSIONS['MPGA'],
+        AudioUtility::EXTENSIONS['M4A'],
+        AudioUtility::EXTENSIONS['WAV'],
+        AudioUtility::EXTENSIONS['WEBM']
+    ];
+
+    /**
      * An array containing the API credentials.
      *
      * @var array
@@ -84,6 +97,13 @@ class WhisperSpeechToText implements SpeechToTextInterface
      * @var array
      */
     private $configurations = [];
+
+    /**
+     * Temporary files that were generated during the transcription process
+     * 
+     * @var string[]
+     */
+    private $tempFiles = [];
 
     /**
      * Sets the credentials.
@@ -148,18 +168,27 @@ class WhisperSpeechToText implements SpeechToTextInterface
         $requestData = $this->_getRequestData();
 
         $audioChunks = [];
-        $discardTempFiles = false;
         $responses = [];
         $transcription = '';
 
         try {
             $audioDetails = AudioUtility::getAudioDetails($audioFile);
+
+            if (!in_array($audioDetails['extension'], self::SUPPORTED_FILE_FORMATS)) {
+                $outfile = AudioUtility::getTempFileName($audioFile, AudioUtility::EXTENSIONS['MP3']);
+                AudioUtility::convertAudio($audioFile, $outfile, AudioUtility::EXTENSIONS['MP3']);
+                $this->tempFiles[] = $outfile;
+                $audioFile = $outfile;
+                $audioDetails = AudioUtility::getAudioDetails($audioFile);
+            }
+
             if ($audioDetails['filesize'] > self::MAX_FILE_SIZE) {
                 $audioChunks = AudioUtility::splitAudioBySize($audioFile, self::MAX_FILE_SIZE);
-                $discardTempFiles = true;
+                $this->tempFiles = array_merge($this->tempFiles, $audioChunks);
             } else {
                 $audioChunks[] = $audioFile;
             }
+
             foreach ($audioChunks as $audioChunk) {
                 $requestData['file'] = new CURLFile($audioChunk);
                 $response = CurlRequest::send(
@@ -180,11 +209,7 @@ class WhisperSpeechToText implements SpeechToTextInterface
         } catch (Exception $e) {
             throw $e;
         } finally {
-            if ($discardTempFiles) {
-                foreach ($audioChunks as $audioChunk) {
-                    unlink($audioChunk);
-                }
-            }
+            $this->_discardTempFiles();
         }
 
         $speechToTextResult = new SpeechToTextResult();
@@ -239,6 +264,18 @@ class WhisperSpeechToText implements SpeechToTextInterface
         $requestData['response_format'] = self::DEFAULT_RESPONSE_FORMAT;
 
         return $requestData;
+    }
+
+    /**
+     * Removes all temporary files
+     */
+    private function _discardTempFiles()
+    {
+        foreach ($this->tempFiles as $tempFile) {
+            if (file_exists($tempFile)) {
+                unlink($tempFile);
+            }
+        }
     }
 
     /**
