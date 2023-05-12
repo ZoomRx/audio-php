@@ -60,6 +60,12 @@ class AudioUtility
             throw new Exception('Invalid path provided to get the audio details');
         }
 
+        if (pathinfo($infile, PATHINFO_EXTENSION) != AudioUtility::EXTENSIONS['MP3']) {
+            $tempFile = self::getTempFileName($infile, AudioUtility::EXTENSIONS['MP3']);
+            self::convertAudio($infile, $tempFile, AudioUtility::EXTENSIONS['MP3']);
+            $infile = $tempFile;
+        }
+
         $tmpDirectory = TMP;
 
         $script = realpath(__DIR__) . '/audio_splitter.py';
@@ -67,6 +73,9 @@ class AudioUtility
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
+        if (!empty($tempFile)) {
+            unlink($tempFile);
+        }
         if ($resultCode != 0) {
             self::throwException("Unable to split audio", $resultCode, $output);
         }

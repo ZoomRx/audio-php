@@ -174,7 +174,7 @@ class WhisperSpeechToText implements SpeechToTextInterface
         try {
             $audioDetails = AudioUtility::getAudioDetails($audioFile);
 
-            if (!in_array($audioDetails['extension'], self::SUPPORTED_FILE_FORMATS)) {
+            if (!in_array($audioDetails['extension'], self::SUPPORTED_FILE_FORMATS) || $audioDetails['filesize'] > self::MAX_FILE_SIZE) {
                 $outfile = AudioUtility::getTempFileName($audioFile, AudioUtility::EXTENSIONS['MP3']);
                 AudioUtility::convertAudio($audioFile, $outfile, AudioUtility::EXTENSIONS['MP3']);
                 $this->tempFiles[] = $outfile;
