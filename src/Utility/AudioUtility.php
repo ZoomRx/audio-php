@@ -188,7 +188,7 @@ class AudioUtility
         exec($command, $output, $resultCode);
 
         if ($resultCode != 0) {
-            self::throwException("Unable to convert audio", $resultCode, $output);
+            self::throwException("Unable to compute word error rate", $resultCode, $output);
         }
 
         return round(floatval($output[0] ?? 100), 2);
