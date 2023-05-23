@@ -5,3 +5,8 @@
 
 ## 1.1.0 (2023-05-10)
 * Extended Whisper API support for all file formats
+
+## 1.1.1 (2023-05-17)
+* Bug fix (Pydub error: Invalid file format - m4a)
+* Added timestamp support in Whipser API
+* Added WER utility

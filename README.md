@@ -15,6 +15,9 @@ SpeechToText provides a simple and convenient way to utilize the Speech-to-Text 
 - cURL extension enabled
 - API key or credentials for the respective Speech-to-Text service providers (Google, OpenAI-Whisper, and AssemblyAI)
 - Python for audio manipulation
+- Python pydub module
+- Python jiwer module
+- ffmpeg CLI
 
 ## Usage
 
@@ -42,5 +45,5 @@ To use SpeechToText-PHP in your PHP application, follow these steps:
 3. Invoke transcribe function along with the file path and get results:
     ```php
     $speechToTextResult = $speechToTextObj->transcribe($infile);
-    $transcription = $$speechToTextResult->getTranscription();
+    $transcription = $speechToTextResult->getTranscription();
     ```

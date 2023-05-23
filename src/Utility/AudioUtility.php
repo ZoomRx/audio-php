@@ -170,4 +170,27 @@ class AudioUtility
 
         throw new Exception($formattedMessage);
     }
+
+    /**
+     * Computes word error rate between reference and hypothesis text
+     * 
+     * @param string $reference Text to be referred
+     * @param string $hypothesis Text to be matched
+     * 
+     * @return float
+     * @throws Exception
+     */
+    public static function computeWER($reference, $hypothesis)
+    {
+        $script = realpath(__DIR__) . '/stt_error_rate.py';
+        $command = trim("python {$script} --reference='{$reference}' --hypothesis='{$hypothesis}'");
+        $command = escapeshellcmd($command);
+        exec($command, $output, $resultCode);
+
+        if ($resultCode != 0) {
+            self::throwException("Unable to convert audio", $resultCode, $output);
+        }
+
+        return floatval($output[0] ?? 100);
+    }
 }

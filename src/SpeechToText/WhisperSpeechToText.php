@@ -169,6 +169,7 @@ class WhisperSpeechToText implements SpeechToTextInterface
 
         $audioChunks = [];
         $responses = [];
+        $rawTranscription = '';
         $transcription = '';
 
         try {
@@ -189,6 +190,7 @@ class WhisperSpeechToText implements SpeechToTextInterface
                 $audioChunks[] = $audioFile;
             }
 
+            $duration = 0;
             foreach ($audioChunks as $audioChunk) {
                 $requestData['file'] = new CURLFile($audioChunk);
                 $response = CurlRequest::send(
@@ -204,7 +206,12 @@ class WhisperSpeechToText implements SpeechToTextInterface
                 }
 
                 $responses[] = $response;
-                $transcription .= ' ' . $response['text'];
+                $rawTranscription .= ' ' . $response['text'];
+                $transcription .= ' ' . $this->_getTranscription($response, $duration);
+
+                if (count($audioChunks) > 1) {
+                    $duration = floor($duration + AudioUtility::getAudioDetails($audioChunk)['duration']);
+                }
             }
         } catch (Exception $e) {
             throw $e;
@@ -215,7 +222,7 @@ class WhisperSpeechToText implements SpeechToTextInterface
         $speechToTextResult = new SpeechToTextResult();
         $speechToTextResult->setConfigurations($this->configurations);
         $speechToTextResult->setResponse($responses);
-        $speechToTextResult->setRawTranscription(trim($transcription));
+        $speechToTextResult->setRawTranscription(trim($rawTranscription));
         $speechToTextResult->setTranscription(trim($transcription));
 
         return $speechToTextResult;
@@ -278,6 +285,35 @@ class WhisperSpeechToText implements SpeechToTextInterface
         }
     }
 
+    /**
+     * Get the formatted transcription 
+     *
+     * @param array $response The response array from the Whisper API.
+     * @param int $duration The previous audio duration
+     *
+     * @return string $transcription
+     */
+    private function _getTranscription(array $response, int $duration = 0): string
+    {
+        $transcription = '';
+
+        foreach ($response['segments'] as $segment) {
+            if (!empty($this->configurations['word_time'])) {
+                $seconds = floor($segment['start']) + $duration;
+
+                $format = ($seconds >= 3600) ? 'H:i:s' : 'i:s';
+                $formattedTime = gmdate($format, $seconds) . ':' . sprintf('%03d', 0);
+
+                $transcription .= PHP_EOL;
+                $transcription .= '@' . $formattedTime;
+                $transcription .= PHP_EOL;
+            }
+
+            $transcription .= $segment['text'];
+        }
+
+        return $transcription;
+    }
     /**
      * Parses the given language value to get the language code
      * 
