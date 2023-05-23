@@ -191,6 +191,6 @@ class AudioUtility
             self::throwException("Unable to convert audio", $resultCode, $output);
         }
 
-        return floatval($output[0] ?? 100);
+        return round(floatval($output[0] ?? 100), 2);
     }
 }
