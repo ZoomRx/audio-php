@@ -163,12 +163,16 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
             );
 
             $queueOperation = json_decode($response, true);
+            if (!empty($queueOperation['error'])) {
+                throw new Exception($response['error']);
+            }
+            
             $response = $this->_pollUntilFinished($queueOperation['id']);
 
             $this->_deleteTranscript($queueOperation['id']);
 
             if ($response['status'] == 'error') {
-                throw new Exception($response['error']);
+                throw new Exception("{$response['error']} for the transcription id {$queueOperation['id']}");
             }
 
             $speechToTextResult = new SpeechToTextResult();
@@ -269,11 +273,10 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
             } else {
                 sleep($sleepTime);
 
+                $sleepTime = ceil($sleepTime * $multiplier);
                 if ($sleepTime > $maxSleepTime) {
                     $sleepTime = $maxSleepTime;
                 }
-
-                $sleepTime = ceil($sleepTime * $multiplier);
             }
         }
     }
