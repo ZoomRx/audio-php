@@ -29,7 +29,7 @@ class AudioUtility
         }
         
         $script = realpath(__DIR__) . '/audio_details.py';
-        $command = "python {$script} --infile='{$infile}'";
+        $command = "python {$script} --infile={$infile}";
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
@@ -69,7 +69,7 @@ class AudioUtility
         $tmpDirectory = TMP;
 
         $script = realpath(__DIR__) . '/audio_splitter.py';
-        $command = "python {$script} --infile='{$infile}' --tmp_dir='{$tmpDirectory}' --chunk_size={$chunkSize}";
+        $command = "python {$script} --infile={$infile} --tmp_dir={$tmpDirectory} --chunk_size={$chunkSize}";
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
@@ -105,11 +105,7 @@ class AudioUtility
 
         $optionalArgs = [];
         foreach ($options as $key => $value) {
-            if (is_string($value)) {
-                $optionalArgs[] = "--{$key}='{$value}'";
-            } else {
-                $optionalArgs[] = "--{$key}={$value}";
-            }
+            $optionalArgs[] = "--{$key}={$value}";
         }
 
         if (!empty($optionalArgs)) {
@@ -119,7 +115,7 @@ class AudioUtility
         }
 
         $script = realpath(__DIR__) . '/audio_convertor.py';
-        $command = trim("python {$script} --infile='{$infile}' --outfile='{$outfile}' --outfile_format='{$outfileFormat}' {$optionalArgs}");
+        $command = trim("python {$script} --infile={$infile} --outfile={$outfile} --outfile_format={$outfileFormat} {$optionalArgs}");
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
@@ -183,7 +179,7 @@ class AudioUtility
     public static function computeWER($reference, $hypothesis)
     {
         $script = realpath(__DIR__) . '/stt_error_rate.py';
-        $command = trim("python {$script} --reference='{$reference}' --hypothesis='{$hypothesis}'");
+        $command = trim("python {$script} --reference={$reference} --hypothesis={$hypothesis}");
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 

@@ -10,3 +10,6 @@
 * Bug fix (Pydub error: Invalid file format - m4a)
 * Added timestamp support in Whipser API
 * Added WER utility
+
+## 1.1.2 (2023-06-30)
+* Bug fix (Updated python utility commands to handle strings with single quote)
