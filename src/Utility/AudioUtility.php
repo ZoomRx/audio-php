@@ -189,7 +189,7 @@ class AudioUtility
         $script = escapeshellarg(realpath(__DIR__) . '/stt_error_rate.py');
         $reference = escapeshellarg($reference);
         $hypothesis = escapeshellarg($hypothesis);
-        $command = trim("python {$script} --reference={e$reference} --hypothesis={$hypothesis}");
+        $command = trim("python {$script} --reference={$reference} --hypothesis={$hypothesis}");
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
