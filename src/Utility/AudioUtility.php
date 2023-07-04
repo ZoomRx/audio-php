@@ -28,7 +28,8 @@ class AudioUtility
             throw new Exception('Invalid path provided to get the audio details');
         }
         
-        $script = realpath(__DIR__) . '/audio_details.py';
+        $script = escapeshellarg(realpath(__DIR__) . '/audio_details.py');
+        $infile = escapeshellarg($infile);
         $command = "python {$script} --infile={$infile}";
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
@@ -68,7 +69,10 @@ class AudioUtility
 
         $tmpDirectory = TMP;
 
-        $script = realpath(__DIR__) . '/audio_splitter.py';
+        $script = escapeshellarg(realpath(__DIR__) . '/audio_splitter.py');
+        $infile = escapeshellarg($infile);
+        $tmpDirectory = escapeshellarg($tmpDirectory);
+        $chunkSize = escapeshellarg($chunkSize);
         $command = "python {$script} --infile={$infile} --tmp_dir={$tmpDirectory} --chunk_size={$chunkSize}";
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
@@ -105,6 +109,7 @@ class AudioUtility
 
         $optionalArgs = [];
         foreach ($options as $key => $value) {
+            $value = escapeshellarg($value);
             $optionalArgs[] = "--{$key}={$value}";
         }
 
@@ -114,7 +119,10 @@ class AudioUtility
             $optionalArgs = '';
         }
 
-        $script = realpath(__DIR__) . '/audio_convertor.py';
+        $script = escapeshellarg(realpath(__DIR__) . '/audio_convertor.py');
+        $infile = escapeshellarg($infile);
+        $outfile = escapeshellarg($outfile);
+        $outfileFormat = escapeshellarg($outfileFormat);
         $command = trim("python {$script} --infile={$infile} --outfile={$outfile} --outfile_format={$outfileFormat} {$optionalArgs}");
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
@@ -178,8 +186,10 @@ class AudioUtility
      */
     public static function computeWER($reference, $hypothesis)
     {
-        $script = realpath(__DIR__) . '/stt_error_rate.py';
-        $command = trim("python {$script} --reference={$reference} --hypothesis={$hypothesis}");
+        $script = escapeshellarg(realpath(__DIR__) . '/stt_error_rate.py');
+        $reference = escapeshellarg($reference);
+        $hypothesis = escapeshellarg($hypothesis);
+        $command = trim("python {$script} --reference={e$reference} --hypothesis={$hypothesis}");
         $command = escapeshellcmd($command);
         exec($command, $output, $resultCode);
 
