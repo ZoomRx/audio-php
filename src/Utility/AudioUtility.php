@@ -28,11 +28,9 @@ class AudioUtility
             throw new Exception('Invalid path provided to get the audio details');
         }
         
-        $script = escapeshellarg(realpath(__DIR__) . '/audio_details.py');
-        $infile = escapeshellarg($infile);
-        $command = "python {$script} --infile={$infile}";
-        $command = escapeshellcmd($command);
-        exec($command, $output, $resultCode);
+        list($resultCode, $output) = self::executePythonScript('audio_details.py', [
+            'infile' => $infile,
+        ]);
 
         if ($resultCode != 0) {
             self::throwException("Unable to get audio details", $resultCode, $output);
@@ -67,16 +65,12 @@ class AudioUtility
             $infile = $tempFile;
         }
 
-        $tmpDirectory = TMP;
-
-        $script = escapeshellarg(realpath(__DIR__) . '/audio_splitter.py');
-        $infile = escapeshellarg($infile);
-        $tmpDirectory = escapeshellarg($tmpDirectory);
-        $chunkSize = escapeshellarg($chunkSize);
-        $command = "python {$script} --infile={$infile} --tmp_dir={$tmpDirectory} --chunk_size={$chunkSize}";
-        $command = escapeshellcmd($command);
-        exec($command, $output, $resultCode);
-
+        list($resultCode, $output) = self::executePythonScript('audio_splitter.py', [
+            'infile' => $infile,
+            'tmp_dir' => TMP,
+            'chunk_size' => $chunkSize,
+        ]);
+        
         if (!empty($tempFile)) {
             unlink($tempFile);
         }
@@ -107,26 +101,16 @@ class AudioUtility
             throw new Exception('Invalid path provided to get the audio details');
         }
 
-        $optionalArgs = [];
-        foreach ($options as $key => $value) {
-            $value = escapeshellarg($value);
-            $optionalArgs[] = "--{$key}={$value}";
-        }
-
-        if (!empty($optionalArgs)) {
-            $optionalArgs = implode(" ", $optionalArgs);
-        } else {
-            $optionalArgs = '';
-        }
-
-        $script = escapeshellarg(realpath(__DIR__) . '/audio_convertor.py');
-        $infile = escapeshellarg($infile);
-        $outfile = escapeshellarg($outfile);
-        $outfileFormat = escapeshellarg($outfileFormat);
-        $command = trim("python {$script} --infile={$infile} --outfile={$outfile} --outfile_format={$outfileFormat} {$optionalArgs}");
-        $command = escapeshellcmd($command);
-        exec($command, $output, $resultCode);
-
+        $args = array_merge(
+            [
+                'infile' => $infile,
+                'outfile' => $outfile,
+                'outfile_format' => $outfileFormat,
+            ],
+            $options
+        );
+        list($resultCode, $output) = self::executePythonScript('audio_convertor.py', $args);
+        
         if ($resultCode != 0) {
             self::throwException("Unable to convert audio", $resultCode, $output);
         }
@@ -186,17 +170,44 @@ class AudioUtility
      */
     public static function computeWER($reference, $hypothesis)
     {
-        $script = escapeshellarg(realpath(__DIR__) . '/stt_error_rate.py');
-        $reference = escapeshellarg($reference);
-        $hypothesis = escapeshellarg($hypothesis);
-        $command = trim("python {$script} --reference={$reference} --hypothesis={$hypothesis}");
-        $command = escapeshellcmd($command);
-        exec($command, $output, $resultCode);
+        list($resultCode, $output) = self::executePythonScript('stt_error_rate.py', [
+            'reference' => $reference,
+            'hypothesis' => $hypothesis,
+        ]);
 
         if ($resultCode != 0) {
             self::throwException("Unable to compute word error rate", $resultCode, $output);
         }
 
         return round(floatval($output[0] ?? 100), 2);
+    }
+
+    /**
+     * Runs python script
+     * 
+     * @param string $script Name of the script to run
+     * @param array $args Key-Value pairs of arguments to pass to the script
+     * 
+     * @return array [resultCode, output]
+     */
+    private static function executePythonScript($script, $args = [])
+    {
+        $cmdArgs = [];
+        foreach ($args as $key => $value) {
+            $value = str_replace('"', '', $value);
+            $cmdArgs[] = "--{$key}=\"{$value}\"";
+        }
+
+        if (!empty($cmdArgs)) {
+            $cmdArgs = implode(" ", $cmdArgs);
+        } else {
+            $cmdArgs = '';
+        }
+
+        $script = realpath(__DIR__) . '/' . trim($script);
+        $command = escapeshellcmd(trim("python {$script} " . $cmdArgs));
+        exec($command, $output, $resultCode);
+
+        return [$resultCode, $output];
     }
 }
