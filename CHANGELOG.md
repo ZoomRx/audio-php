@@ -12,4 +12,7 @@
 * Added WER utility
 
 ## 1.1.2 (2023-07-05)
-* Bug fix (Updated python utility commands to handle strings with single quote)
+* Bug fix (Updated python utility commands to handle strings with quotes)
+
+## 1.1.3 (2023-07-05)
+* Added custom exceptions for file not found

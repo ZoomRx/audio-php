@@ -3,6 +3,7 @@ namespace ZoomRx\Audio\SpeechToText;
 
 use Exception;
 use Locale;
+use ZoomRx\Audio\Exceptions\FileNotFoundException;
 use ZoomRx\Audio\Utility\CurlRequest;
 
 /**
@@ -122,7 +123,7 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
         }
 
         if (strpos($audioFile, 'http') !== 0 && !file_exists($audioFile)) {
-            throw new Exception('Invalid file path provided for transcription');
+            throw new FileNotFoundException('Invalid file path provided for transcription');
         }
     }
 

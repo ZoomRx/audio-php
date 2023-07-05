@@ -10,6 +10,7 @@ use Google\Cloud\Speech\V1p1beta1\SpeechClient;
 use Google\Cloud\Speech\V1p1beta1\SpeechContext;
 use Google\Cloud\Storage\StorageClient;
 use Throwable;
+use ZoomRx\Audio\Exceptions\FileNotFoundException;
 use ZoomRx\Audio\Utility\AudioUtility;
 
 /**
@@ -187,7 +188,7 @@ class GoogleSpeechToText implements SpeechToTextInterface
         }
 
         if (!file_exists($audioFile)) {
-            throw new Exception('Invalid file path provided for transcription');
+            throw new FileNotFoundException('Invalid file path provided for transcription');
         }
     }
 
