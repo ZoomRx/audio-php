@@ -165,7 +165,11 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
 
             $queueOperation = json_decode($response, true);
             if (!empty($queueOperation['error'])) {
-                throw new Exception($response['error']);
+                throw new Exception($queueOperation['error']);
+            }
+
+            if (empty($queueOperation['id'])) {
+                throw new Exception("Transcription queue ID not found - " . json_encode($queueOperation));
             }
             
             $response = $this->_pollUntilFinished($queueOperation['id']);

@@ -16,3 +16,6 @@
 
 ## 1.1.3 (2023-07-05)
 * Added custom exceptions for file not found
+
+## 1.1.4 (2023-07-05)
+* Bug fix (Throw exception in AssemblyAI if queue ID not found)
