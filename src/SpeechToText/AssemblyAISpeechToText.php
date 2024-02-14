@@ -320,13 +320,15 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
     {
         $transcription = '';
         $speaker = -1;
-
+        $wordCount = 0;
+        $addPcrTimeStamp = !empty($this->configurations['pcr_time_stamp']) && !empty($this->configurations['word_time']);
+        $sentenceWordLimit = 10;
         foreach ($response['words'] as $word) {
             if (
                 !empty($this->configurations['speaker_labels'])
                 && $speaker != $word['speaker']
             ) {
-                if (!empty($this->configurations['word_time'])) {
+                if (!empty($this->configurations['word_time']) && empty($this->configurations['pcr_time_stamp'])) {
                     $milliseconds = $word['start'];
                     $seconds = floor($milliseconds / 1000);
                     $milliseconds %= 1000;
@@ -336,16 +338,44 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
 
                     $transcription .= PHP_EOL;
                     $transcription .= '@' . $formattedTime;
+                } 
+
+                if ($addPcrTimeStamp) {
+                    if ($wordCount != 0) {
+                        $transcription .= ' #' . $word['start'];
+                        $wordCount = 0;
+                    }
+
+                    if ($speaker != -1) {
+                        $transcription .= ' $' . $word['start'];
+                    }
                 }
 
                 $speaker = $word['speaker'];
                 $transcription .= PHP_EOL;
+
+                if ($addPcrTimeStamp) {
+                    $transcription .= '$' . $word['start'] . ' ';
+                }
                 $transcription .= "SPEAKER_{$speaker}:";
             }
 
-            $transcription .= ' ' . $word['text'];
-        }
+            if ($addPcrTimeStamp && $wordCount == 0) {
+                $transcription .= ' #' . $word['start'];
+            }
 
+            $transcription .= ' ' . $word['text'];
+            $wordCount +=1;
+
+            if ($addPcrTimeStamp && $wordCount == $sentenceWordLimit) { 
+                $wordCount = 0;
+                $transcription .= ' #' . $word['end'];
+            }
+        }
+        if ($addPcrTimeStamp) {
+            $transcription .= ' #' . $word['end'];
+            $transcription .= ' $' . $word['end'];
+        }
         $speechToTextResult->setRawTranscription(trim($response['text']));
         $speechToTextResult->setTranscription(trim($transcription));
     }
