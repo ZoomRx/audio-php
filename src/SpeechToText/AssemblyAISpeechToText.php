@@ -239,12 +239,13 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
             file_get_contents($audioFile)
         );
 
-        $response = json_decode($response, true);
-        if (empty($response['upload_url'])) {
-            throw new Exception('Failed to upload audio to AssemblyAI server');
+        $responseDecoded = json_decode($response, true);
+
+        if (empty($responseDecoded['upload_url'])) {
+            throw new Exception('Failed to upload audio to AssemblyAI server. Response: ' . $response);
         }
 
-        return $response['upload_url'];
+        return $responseDecoded['upload_url'];
     }
 
     /**

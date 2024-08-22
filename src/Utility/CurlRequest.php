@@ -42,7 +42,9 @@ class CurlRequest
         $response = curl_exec($ch);
     
         if (curl_errno($ch)) {
-            throw new Exception("cURL Error: " . curl_error($ch));
+            $httpStatusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $errorMessage = 'cURL Error: ' . curl_error($ch) . ' (HTTP Status Code: ' . $httpStatusCode . ')';
+            throw new Exception($errorMessage);
         }
     
         curl_close($ch);
