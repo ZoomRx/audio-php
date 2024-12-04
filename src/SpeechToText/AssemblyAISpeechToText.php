@@ -332,15 +332,13 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
                 if (!empty($this->configurations['word_time']) && empty($this->configurations['pcr_time_stamp'])) {
                     $milliseconds = $word['start'];
                     $seconds = floor($milliseconds / 1000);
-                    $milliseconds %= 1000;
-
-                    $format = ($seconds >= 3600) ? 'H:i:s' : 'i:s';
-                    $formattedTime = gmdate($format, $seconds) . ':' . sprintf('%03d', $milliseconds);
-
-                    $transcription .= PHP_EOL;
-                    $transcription .= '@' . $formattedTime;
-                } 
-
+        
+                    $formattedTime = gmdate('H:i:s', $seconds);
+        
+                    $transcription .= PHP_EOL . PHP_EOL;
+                    $transcription .= $formattedTime;
+                }
+        
                 if ($addPcrTimeStamp) {
                     if ($wordCount != 0) {
                         $transcription .= ' #' . $word['start'];
