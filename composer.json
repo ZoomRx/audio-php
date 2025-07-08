@@ -1,6 +1,7 @@
 {
     "name": "zoomrx/audio-php",
     "description": "A PHP wrapper package for audio manipulation and Speech-To-Text operations.",
+    "version": "1.1.5",
     "type": "library",
     "require": {
         "php": ">=7.4",

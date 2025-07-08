@@ -70,6 +70,7 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
         'summary_model',
         'summary_type',
         'entity_detection',
+        'speech_model',
     ];
 
     /**

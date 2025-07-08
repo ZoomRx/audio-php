@@ -19,3 +19,6 @@
 
 ## 1.1.4 (2023-07-05)
 * Bug fix (Throw exception in AssemblyAI if queue ID not found)
+
+## 1.1.5 (2025-07-08)
+* Added support for AssemblyAI speech model
