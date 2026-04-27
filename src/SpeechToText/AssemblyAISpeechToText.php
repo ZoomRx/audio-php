@@ -59,6 +59,7 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
         'speaker_labels',
         'speakers_expected',
         'word_boost',
+        'boost_param',
         'language_detection',
         'punctuate',
         'format_text',
