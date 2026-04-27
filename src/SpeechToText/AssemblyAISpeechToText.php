@@ -48,6 +48,7 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
      */
     const CONFIG_MAP = [
         'language' => 'language_code',
+        'word_boost' => 'keyterms_prompt',
     ];
 
     /**
@@ -58,7 +59,6 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
         'speaker_labels',
         'speakers_expected',
         'word_boost',
-        'boost_param',
         'language_detection',
         'punctuate',
         'format_text',
