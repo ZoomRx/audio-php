@@ -72,6 +72,8 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
         'summary_type',
         'entity_detection',
         'speech_model',
+        'prompt',
+        'domain',
     ];
 
     /**
