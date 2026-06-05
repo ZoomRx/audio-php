@@ -49,6 +49,7 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
     const CONFIG_MAP = [
         'language' => 'language_code',
         'word_boost' => 'keyterms_prompt',
+        'speech_model' => 'speech_models',
     ];
 
     /**
@@ -72,6 +73,8 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
         'summary_type',
         'entity_detection',
         'speech_model',
+        'prompt',
+        'domain',
     ];
 
     /**
@@ -393,5 +396,17 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
         $locale = Locale::parseLocale($value);
 
         return $locale['language'] ?? self::DEFAULT_LANGUAGE_CODE;
+    }
+
+    /**
+     * Wraps the speech_model value in an array so it serializes as AssemblyAI's
+     * `speech_models` parameter. Accepts either a single string or an array.
+     *
+     * @param string|array $value
+     * @return array
+     */
+    private function _parseSpeechModel($value): array
+    {
+        return is_array($value) ? array_values($value) : [$value];
     }
 }

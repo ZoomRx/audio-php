@@ -22,3 +22,7 @@
 
 ## 1.1.5 (2025-07-08)
 * Added support for AssemblyAI speech model
+
+## 1.1.6 (2026-05-28)
+* Added `prompt` and `domain` to AssemblyAI valid configurations
+* Mapped the `speech_model` config to AssemblyAI's plural `speech_models` API parameter, wrapping a single string or array value via the new parser (supports Universal-3 Pro model selection)
