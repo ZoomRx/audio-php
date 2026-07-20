@@ -59,6 +59,7 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
         'language',
         'speaker_labels',
         'speakers_expected',
+        'speaker_options',
         'word_boost',
         'boost_param',
         'language_detection',
@@ -408,5 +409,27 @@ class AssemblyAISpeechToText implements SpeechToTextInterface
     private function _parseSpeechModel($value): array
     {
         return is_array($value) ? array_values($value) : [$value];
+    }
+
+    /**
+     * Parses the speaker_options config into AssemblyAI's nested `speaker_options`
+     * object, whitelisting only the supported min/max keys and coercing to int.
+     * Requires `speaker_labels` to be enabled to take effect.
+     *
+     * @param array $value ['min_speakers_expected' => int, 'max_speakers_expected' => int]
+     * @return array
+     */
+    private function _parseSpeakerOptions($value): array
+    {
+        $allowedKeys = ['min_speakers_expected', 'max_speakers_expected'];
+        $speakerOptions = [];
+
+        foreach ($allowedKeys as $key) {
+            if (isset($value[$key])) {
+                $speakerOptions[$key] = (int) $value[$key];
+            }
+        }
+
+        return $speakerOptions;
     }
 }
